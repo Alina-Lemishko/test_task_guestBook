@@ -1,0 +1,39 @@
+@media screen and (min-width: 280px) {
+  .messagesList {
+    width: 240px;
+  }
+
+  .messagesListItem {
+    padding: 10px;
+    background-color: rgb(248, 228, 246);
+    margin-bottom: 8px;
+    color: rgb(76, 106, 110);
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .messagesContainer {
+    flex-grow: 3;
+  }
+
+  .message {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-top: 1px dotted rgb(76, 106, 110);
+    border-bottom: 1px dotted rgb(76, 106, 110);
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .messagesList {
+    width: 720px;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .messagesList {
+    width: 1110px;
+  }
+}
