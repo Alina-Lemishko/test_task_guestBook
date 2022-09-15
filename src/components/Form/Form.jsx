@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { nanoid } from 'nanoid';
 import { Notify } from 'notiflix';
 import moment from 'moment';
 import { Button, TextareaAutosize } from '@mui/material';
@@ -36,8 +35,6 @@ export default function Form({ onSubmit }) {
     onSubmit({
       nameUser,
       message,
-      id: nanoid(),
-      time: moment().format('MMMM D, YYYY'),
     });
     Notify.success('Message was added');
     handleReset();

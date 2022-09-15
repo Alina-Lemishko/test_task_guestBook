@@ -16,7 +16,7 @@ export default function MessagesList({ messages, onDelete }) {
           <IconButton
             aria-label="delete"
             type="button"
-            onClick={() => onDelete(el.id)}
+            onClick={() => onDelete(el._id)}
           >
             <DeleteIcon />
           </IconButton>

@@ -5,22 +5,29 @@ import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import s from './App.module.css';
 import Form from './Form/Form';
 import MessagesList from './MessagesList/MessagesList';
+import { addMessages, getMessages, removeMessages } from 'services/messagesApi';
 
 export const App = () => {
-  const [messages, setMessages] = useState(() => {
-    return JSON.parse(window.localStorage.getItem('messages')) ?? '';
-  });
+  const [messages, setMessages] = useState([]);
 
   useEffect(() => {
-    window.localStorage.setItem('messages', JSON.stringify(messages));
-  }, [messages]);
+    getMessages()
+      .then(res => setMessages(res))
+      .catch(err => console.log('err.message', err.message));
+  }, []);
 
   const messageFormSubmit = message => {
-    setMessages([message, ...messages]);
+    addMessages(message).then(({ data }) =>
+      setMessages([data.data, ...messages])
+    );
   };
 
   const onMessageDelete = messageId => {
-    setMessages(messages => messages.filter(el => el.id !== messageId));
+    removeMessages(messageId).then(res => {
+      if (res.status === 200) {
+        setMessages(messages => messages.filter(el => el._id !== messageId));
+      }
+    });
     Notify.success('Message was deleted');
   };
 

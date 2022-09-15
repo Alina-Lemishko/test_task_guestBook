@@ -16,6 +16,7 @@
 
   .messagesContainer {
     flex-grow: 3;
+    overflow: hidden;
   }
 
   .message {
