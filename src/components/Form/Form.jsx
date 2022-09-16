@@ -1,14 +1,18 @@
-import { useEffect, useState } from 'react';
-import { Notify } from 'notiflix';
-import { Button, TextareaAutosize } from '@mui/material';
+import { memo, useCallback, useEffect, useState } from 'react';
+import { Button } from '@mui/material';
+import TextField from '@mui/material/TextField';
 import s from './Form.module.css';
 
-export default function Form({ onSubmit }) {
+function Form({ onSubmit }) {
   const [nameUser, setNameUser] = useState(() => {
     return JSON.parse(window.localStorage.getItem('nameUser')) ?? '';
   });
   const [message, setMessage] = useState(() => {
     return JSON.parse(window.localStorage.getItem('message')) ?? '';
+  });
+  const [isErrorText, setIsErrorText] = useState({
+    nameUser: ' ',
+    message: ' ',
   });
 
   useEffect(() => {
@@ -16,58 +20,95 @@ export default function Form({ onSubmit }) {
     window.localStorage.setItem('message', JSON.stringify(message));
   }, [nameUser, message]);
 
-  //  document.querySelector('#textarea').addEventListener('keydown', e => {
-  //     if (e.keyCode === 13 && e.ctrlKey) {
-  //       handleSubmit();
-  //     }})
-
   const handleReset = () => {
     setMessage('');
   };
 
-  const handleSubmit = e => {
-    e.preventDefault();
+  const handleSubmit = useCallback(
+    e => {
+      if (e) {
+        e.preventDefault();
+      }
 
-    if (nameUser.trim() === '') {
-      return Notify.warning('Please fill input Name');
-    }
+      let isError = false;
 
-    if (nameUser.length < 2 || nameUser.length > 20) {
-      return Notify.warning(
-        'Name must contain at least two characters and no more than 20 characters'
-      );
-    }
+      if (nameUser.trim() === '') {
+        setIsErrorText(prevState => ({
+          ...prevState,
+          nameUser: 'Please fill input Name',
+        }));
+        isError = true;
+      }
 
-    if (message.trim() === '') {
-      return Notify.warning('Please fill input Message');
-    }
+      if (nameUser.length < 2 || nameUser.length > 20) {
+        setIsErrorText(prevState => ({
+          ...prevState,
+          nameUser:
+            'Name must contain at least two characters and no more than 20 characters',
+        }));
+        isError = true;
+      }
 
-    if (message.length < 4 || message.length > 400) {
-      return Notify.warning('Message must contain at least four characters');
-    }
+      if (message.trim() === '') {
+        setIsErrorText(prevState => ({
+          ...prevState,
+          message: 'Please fill input Message',
+        }));
+        isError = true;
+      }
 
-    if (/^[a-zA-Z0-9_]*$/.test(nameUser)) {
+      if (message.length < 4 || message.length > 400) {
+        setIsErrorText(prevState => ({
+          ...prevState,
+          message: 'Message must contain at least four characters',
+        }));
+        isError = true;
+      }
+
+      if (!/^[a-zA-Z0-9_]*$/.test(nameUser)) {
+        setIsErrorText(prevState => ({
+          ...prevState,
+          nameUser: 'Message may contain only letters, numbers and underscores',
+        }));
+        isError = true;
+      }
+
+      if (isError) {
+        return;
+      }
+
       onSubmit({
         nameUser,
         message,
       });
 
-      Notify.success('Message was added');
       handleReset();
-    } else {
-      return Notify.warning(
-        'Message may contain only letters, numbers and underscores'
-      );
+    },
+    [message, nameUser, onSubmit]
+  );
+
+  const onKeyPressed = e => {
+    if (e.keyCode === 13 && e.ctrlKey) {
+      handleSubmit();
+      return;
     }
   };
 
   const handleChange = ({ target: { name, value } }) => {
     switch (name) {
-      case 'name':
+      case 'nameUser':
         setNameUser(value);
+        setIsErrorText(prevState => ({
+          ...prevState,
+          nameUser: ' ',
+        }));
         break;
-      case 'text':
+      case 'message':
         setMessage(value);
+        setIsErrorText(prevState => ({
+          ...prevState,
+          message: ' ',
+        }));
         break;
       default:
         break;
@@ -76,37 +117,48 @@ export default function Form({ onSubmit }) {
 
   return (
     <div>
-      <form className={s.form} onSubmit={handleSubmit}>
-        <label>
-          Name
-          <input
-            className={s.input}
-            type="text"
-            name="name"
-            value={nameUser}
-            placeholder="name"
-            onChange={handleChange}
-            pattern="^[a-zA-Z0-9_]*$"
-            title="Name may contain only letters, numbers and underscores"
-            required
-          />
-        </label>
-        <label>
-          Message
-          <TextareaAutosize
-            aria-label="minimum height"
-            id="textarea"
-            className={s.input}
-            name="text"
-            value={message}
-            minRows={5}
-            maxRows={5}
-            placeholder="Your message"
-            title="Please write your message"
-            onChange={handleChange}
-            required
-          />
-        </label>
+      <form id="form" className={s.form} onSubmit={handleSubmit}>
+        <TextField
+          label="Name"
+          variant="outlined"
+          size="small"
+          name="nameUser"
+          value={nameUser}
+          onChange={handleChange}
+          helperText={isErrorText.nameUser}
+          error={isErrorText.nameUser !== ' ' && !!isErrorText.nameUser}
+          sx={{
+            marginBottom: '10px',
+            width: '100%',
+            '& .MuiInputLabel-root': { color: '#4c6a6e' },
+            '& .MuiOutlinedInput-root': {
+              '& > fieldset': { border: '3px solid #f8e4f6' },
+            },
+          }}
+        />
+        <TextField
+          onKeyDown={onKeyPressed}
+          tabIndex={0}
+          label="Message"
+          variant="outlined"
+          size="small"
+          name="message"
+          value={message}
+          minRows={5}
+          maxRows={5}
+          helperText={isErrorText.message}
+          error={isErrorText.message !== ' ' && !!isErrorText.message}
+          onChange={handleChange}
+          multiline
+          sx={{
+            marginBottom: '10px',
+            width: '100%',
+            '& .MuiInputLabel-root': { color: '#4c6a6e' },
+            '& .MuiOutlinedInput-root': {
+              '& > fieldset': { border: '3px solid #f8e4f6' },
+            },
+          }}
+        />
         <Button
           variant="outlined"
           type="submit"
@@ -126,3 +178,5 @@ export default function Form({ onSubmit }) {
     </div>
   );
 }
+
+export default memo(Form);

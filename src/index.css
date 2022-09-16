@@ -24,7 +24,8 @@ ul,
 ol,
 p,
 li,
-ul {
+ul,
+input {
   margin: 0;
   padding: 0;
 }

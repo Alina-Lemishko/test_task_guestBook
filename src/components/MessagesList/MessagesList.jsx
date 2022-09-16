@@ -3,8 +3,9 @@ import moment from 'moment';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import s from './MessagesList.module.css';
+import { memo } from 'react';
 
-export default function MessagesList({ messages, onDelete }) {
+function MessagesList({ messages, onDelete }) {
   return (
     <div className={s.messagesList}>
       {messages?.map(el => (
@@ -26,3 +27,5 @@ export default function MessagesList({ messages, onDelete }) {
     </div>
   );
 }
+
+export default memo(MessagesList);

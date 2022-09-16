@@ -6,8 +6,9 @@ import s from './App.module.css';
 import Form from './Form/Form';
 import MessagesList from './MessagesList/MessagesList';
 import { addMessages, getMessages, removeMessages } from 'services/messagesApi';
+import { memo } from 'react';
 
-export const App = () => {
+const App = () => {
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
@@ -22,7 +23,10 @@ export const App = () => {
 
   const messageFormSubmit = message => {
     addMessages(message)
-      .then(({ data }) => setMessages([data.data, ...messages]))
+      .then(({ data }) => {
+        Notify.success('Message was added');
+        return setMessages([data.data, ...messages]);
+      })
       .catch(err =>
         Notify.failure(`Something went wrong ${err.message}. Try later`)
       );
@@ -59,8 +63,16 @@ export const App = () => {
         <h2 className={s.secondTitle}>You can leave your message</h2>
         <Form onSubmit={messageFormSubmit} />
         <h2 className={s.secondTitle}>Messages</h2>
-        <MessagesList messages={messages} onDelete={onMessageDelete} />
+        {messages.length > 0 ? (
+          <MessagesList messages={messages} onDelete={onMessageDelete} />
+        ) : (
+          <p className={s.afterTitle}>
+            You can leave the first message in our Guestbook
+          </p>
+        )}
       </div>
     </div>
   );
 };
+
+export default memo(App);
