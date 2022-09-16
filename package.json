@@ -2,7 +2,6 @@
   "name": "test-task-guestBook",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://Alina-Lemishko.github.io/test_task_guestBook/",
   "dependencies": {
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
