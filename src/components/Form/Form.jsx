@@ -16,6 +16,11 @@ export default function Form({ onSubmit }) {
     window.localStorage.setItem('message', JSON.stringify(message));
   }, [nameUser, message]);
 
+  //  document.querySelector('#textarea').addEventListener('keydown', e => {
+  //     if (e.keyCode === 13 && e.ctrlKey) {
+  //       handleSubmit();
+  //     }})
+
   const handleReset = () => {
     setMessage('');
   };
@@ -27,16 +32,33 @@ export default function Form({ onSubmit }) {
       return Notify.warning('Please fill input Name');
     }
 
+    if (nameUser.length < 2 || nameUser.length > 20) {
+      return Notify.warning(
+        'Name must contain at least two characters and no more than 20 characters'
+      );
+    }
+
     if (message.trim() === '') {
       return Notify.warning('Please fill input Message');
     }
 
-    onSubmit({
-      nameUser,
-      message,
-    });
-    Notify.success('Message was added');
-    handleReset();
+    if (message.length < 4 || message.length > 400) {
+      return Notify.warning('Message must contain at least four characters');
+    }
+
+    if (/^[a-zA-Z0-9_]*$/.test(nameUser)) {
+      onSubmit({
+        nameUser,
+        message,
+      });
+
+      Notify.success('Message was added');
+      handleReset();
+    } else {
+      return Notify.warning(
+        'Message may contain only letters, numbers and underscores'
+      );
+    }
   };
 
   const handleChange = ({ target: { name, value } }) => {
@@ -64,8 +86,8 @@ export default function Form({ onSubmit }) {
             value={nameUser}
             placeholder="name"
             onChange={handleChange}
-            pattern="^[a-zA-Z0-9_]{1,2}*$"
-            title="Name may contain only letters, numbers, underscores"
+            pattern="^[a-zA-Z0-9_]*$"
+            title="Name may contain only letters, numbers and underscores"
             required
           />
         </label>
@@ -73,6 +95,7 @@ export default function Form({ onSubmit }) {
           Message
           <TextareaAutosize
             aria-label="minimum height"
+            id="textarea"
             className={s.input}
             name="text"
             value={message}

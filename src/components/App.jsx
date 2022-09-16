@@ -12,23 +12,37 @@ export const App = () => {
 
   useEffect(() => {
     getMessages()
-      .then(res => setMessages(res))
-      .catch(err => console.log('err.message', err.message));
+      .then(res => {
+        setMessages(res);
+      })
+      .catch(err =>
+        Notify.failure(`Something went wrong ${err.message}. Try later`)
+      );
   }, []);
 
   const messageFormSubmit = message => {
-    addMessages(message).then(({ data }) =>
-      setMessages([data.data, ...messages])
-    );
+    addMessages(message)
+      .then(({ data }) => setMessages([data.data, ...messages]))
+      .catch(err =>
+        Notify.failure(`Something went wrong ${err.message}. Try later`)
+      );
   };
 
   const onMessageDelete = messageId => {
-    removeMessages(messageId).then(res => {
-      if (res.status === 200) {
+    removeMessages(messageId)
+      .then(res => {
+        if (res.status === 404) {
+          return Notify.failure(`Message to delete not found`);
+        }
+        if (res.status === 500) {
+          return Notify.failure(`Internal Server Error`);
+        }
         setMessages(messages => messages.filter(el => el._id !== messageId));
-      }
-    });
-    Notify.success('Message was deleted');
+        Notify.success('Message was deleted');
+      })
+      .catch(err =>
+        Notify.failure(`Something went wrong ${err.message}. Try later`)
+      );
   };
 
   return (
