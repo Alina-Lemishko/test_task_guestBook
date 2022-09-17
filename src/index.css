@@ -41,3 +41,13 @@ button {
 button {
   cursor: pointer;
 }
+
+*::-webkit-scrollbar {
+  width: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgb(248, 228, 246);
+  border-radius: 2px;
+  border: 1px solid #bbb1b1;
+}
