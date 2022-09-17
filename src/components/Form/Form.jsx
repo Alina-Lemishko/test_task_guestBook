@@ -57,7 +57,7 @@ function Form({ onSubmit }) {
         isError = true;
       }
 
-      if (message.length < 4 || message.length > 400) {
+      if (message.length < 4 || message.length > 1000) {
         setIsErrorText(prevState => ({
           ...prevState,
           message: 'Message must contain at least four characters',
@@ -65,7 +65,7 @@ function Form({ onSubmit }) {
         isError = true;
       }
 
-      if (!/^[a-zA-Z0-9_]*$/.test(nameUser)) {
+      if (!/^[a-zA-Z0-9_\s]*$/.test(nameUser)) {
         setIsErrorText(prevState => ({
           ...prevState,
           nameUser: 'Message may contain only letters, numbers and underscores',
@@ -124,9 +124,9 @@ function Form({ onSubmit }) {
           size="small"
           name="nameUser"
           value={nameUser}
-          onChange={handleChange}
           helperText={isErrorText.nameUser}
           error={isErrorText.nameUser !== ' ' && !!isErrorText.nameUser}
+          onChange={handleChange}
           sx={{
             marginBottom: '10px',
             width: '100%',
@@ -137,8 +137,6 @@ function Form({ onSubmit }) {
           }}
         />
         <TextField
-          onKeyDown={onKeyPressed}
-          tabIndex={0}
           label="Message"
           variant="outlined"
           size="small"
@@ -149,6 +147,8 @@ function Form({ onSubmit }) {
           helperText={isErrorText.message}
           error={isErrorText.message !== ' ' && !!isErrorText.message}
           onChange={handleChange}
+          onKeyDown={onKeyPressed}
+          tabIndex={0}
           multiline
           sx={{
             marginBottom: '10px',

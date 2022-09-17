@@ -1,12 +1,11 @@
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { Notify } from 'notiflix';
 import { AppBar } from '@mui/material';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
-import s from './App.module.css';
+import { addMessages, getMessages, removeMessages } from 'services/messagesApi';
 import Form from './Form/Form';
 import MessagesList from './MessagesList/MessagesList';
-import { addMessages, getMessages, removeMessages } from 'services/messagesApi';
-import { memo } from 'react';
+import s from './App.module.css';
 
 const App = () => {
   const [messages, setMessages] = useState([]);
@@ -37,9 +36,6 @@ const App = () => {
       .then(res => {
         if (res.status === 404) {
           return Notify.failure(`Message to delete not found`);
-        }
-        if (res.status === 500) {
-          return Notify.failure(`Internal Server Error`);
         }
         setMessages(messages => messages.filter(el => el._id !== messageId));
         Notify.success('Message was deleted');
