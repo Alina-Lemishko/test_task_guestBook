@@ -13,7 +13,9 @@ function MessagesList({ messages, onDelete }) {
           <div className={s.messagesContainer}>
             <h3>{el.nameUser}</h3>
             <p className={s.message}>{el.message}</p>
-            <p>{moment(new Date(el.time)).format('DD/MM/YYYY HH:mm:ss')}</p>
+            <p>
+              {moment.unix(`${el.time}` / 1000).format('DD/MM/YYYY HH:mm:ss')}
+            </p>
           </div>
           <IconButton
             aria-label="delete"
