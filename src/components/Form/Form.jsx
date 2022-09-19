@@ -2,6 +2,12 @@ import { memo, useCallback, useEffect, useState } from 'react';
 import { Button } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import s from './Form.module.css';
+import {
+  MAX_MESSAGE_SYMBOLS,
+  MAX_NAME_SYMBOLS,
+  MIN_MESSAGE_SYMBOLS,
+  MIN_NAME_SYMBOLS,
+} from 'components/helpers/constants';
 
 function Form({ onSubmit }) {
   const [nameUser, setNameUser] = useState(() => {
@@ -40,11 +46,13 @@ function Form({ onSubmit }) {
         isError = true;
       }
 
-      if (nameUser.length < 2 || nameUser.length > 20) {
+      if (
+        nameUser.length < MIN_NAME_SYMBOLS ||
+        nameUser.length > MAX_NAME_SYMBOLS
+      ) {
         setIsErrorText(prevState => ({
           ...prevState,
-          nameUser:
-            'Name must contain at least two characters and no more than 20 characters',
+          nameUser: `Name must contain at least ${MIN_NAME_SYMBOLS} characters and no more than ${MAX_NAME_SYMBOLS} characters`,
         }));
         isError = true;
       }
@@ -57,10 +65,13 @@ function Form({ onSubmit }) {
         isError = true;
       }
 
-      if (message.length < 4 || message.length > 1000) {
+      if (
+        message.length < MIN_MESSAGE_SYMBOLS ||
+        message.length > MAX_MESSAGE_SYMBOLS
+      ) {
         setIsErrorText(prevState => ({
           ...prevState,
-          message: 'Message must contain at least four characters',
+          message: `Message must contain at least ${MIN_MESSAGE_SYMBOLS} characters and no more than ${MAX_MESSAGE_SYMBOLS} characters`,
         }));
         isError = true;
       }
